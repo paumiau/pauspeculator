@@ -71,7 +71,7 @@ class trade {
                 return $return_ticker;
 
             } else {
-                die ("El Exchange debe ser Bitstamp o Btce"."\r\n");
+                die ("El Exchange debe ser Bitstamp, Cryptsy o Btce"."\r\n");
             }   
 
             
@@ -81,7 +81,7 @@ class trade {
 
             $exchange = $this->exchange;
             $ecoin=$this->ecoin;
-            
+            $market=$this->market; 
             if ($exchange=='bitstamp') {
 		try {
 			$balance = $this->oBitstamp->bitstamp_query('balance');
@@ -90,7 +90,7 @@ class trade {
 			echo 'Excepción capturada: ',  $e->getMessage(), "\n";
 			return null;
 		}
-                $return_balance['usd_available'] = $balance['usd_available'];
+                $return_balance[$market.'_available'] = $balance['usd_available'];
                 $return_balance[$ecoin.'_available'] = $balance[$ecoin.'_available'];
                 $return_balance['fee'] = $balance['fee'];
                 return $return_balance; 
@@ -104,10 +104,27 @@ class trade {
 			return null;
 			
 		}
-                $return_balance['usd_available'] = $balance['return']['funds']['usd'];
+                $return_balance[$market.'_available'] = $balance['return']['funds']['usd'];
                 $return_balance[$ecoin.'_available'] = $balance['return']['funds'][$ecoin];
                 $return_balance['fee'] = 0.02;
                 return $return_balance; 
+
+            } else if ($exchange=='cryptsy') {
+
+                try {
+                        $balance = $this->oCryptsy->cryptsy_query('getinfo');
+                }
+                catch (Exception $e) {
+                        echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+                        return null;
+
+                }
+		print_r($balance);
+                $return_balance[$market.'_available'] = $balance['return']['balances_available'][strtoupper($ecoin)];
+                $return_balance[$ecoin.'_available'] = $balance['return']['balances_available'][strtoupper($market)];
+                $return_balance['fee'] = 0.025;
+                return $return_balance;
+
                 
             } else {
                 die ("El Exchange debe ser Bitstamp o Btce"."\r\n");

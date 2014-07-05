@@ -105,7 +105,7 @@ $arrayBalance=$oTrade->getBalance();
 
 if ($arrayBalance){
     //print_r($arrayBalance);
-    $usdDisp=intval($arrayBalance['usd_available']*100)/100;
+    $marketDisp=intval($arrayBalance[$market.'_available']*100)/100;
     $ecoinDisp=$arrayBalance[$ecoin.'_available'];
     $fee=$arrayBalance['fee'];
 } else {
@@ -164,7 +164,7 @@ if ($metodo == "media") {
 
 	$ecoinPrecio
 	$ecoinDisp
-	$usdDisp
+	$marketDisp
 	$fee
 	$ecoinModo=$arrayModoTrade['modo'];
 	$precioMediaSmall=$rowPrecioMedia['precio_media']
@@ -172,8 +172,8 @@ if ($metodo == "media") {
 	 */
 
 	//Por si aca compruebo todas las variables no sea que pase algo raro
-	if (!($precioMediaSmall>0) or !($precioMediaLarge>0) or !($ecoinPrecio>0) or !(isset($usdDisp)) or !(isset($ecoinDisp)) or !($fee>0) or ($ecoinModo!='compra' and $ecoinModo!='venta')){
-		$salida.= 'Error! Algun dato esta a 0 o peor. Precio Ecoin: '. $ecoinPrecio.' Dolares disponibles: '.$usdDisp.' Ecoin disponibles: '. $ecoinDisp.' Comision: '.$fee.' Modo: '.$ecoinModo.' Media corta:'.$precioMediaSmall.' Media larga:'.$precioMediaLarge."\r\n";
+	if (!($precioMediaSmall>0) or !($precioMediaLarge>0) or !($ecoinPrecio>0) or !(isset($marketDisp)) or !(isset($ecoinDisp)) or !($fee>0) or ($ecoinModo!='compra' and $ecoinModo!='venta')){
+		$salida.= 'Error! Algun dato esta a 0 o peor. Precio Ecoin: '. $ecoinPrecio.' Dolares disponibles: '.$marketDisp.' Ecoin disponibles: '. $ecoinDisp.' Comision: '.$fee.' Modo: '.$ecoinModo.' Media corta:'.$precioMediaSmall.' Media larga:'.$precioMediaLarge."\r\n";
 		adios($salida);
 	}
 }
@@ -183,8 +183,8 @@ else if ($metodo == "macd") {
 	$histograma = array_shift($res[2]);
 	
 	//Por si aca compruebo todas las variables no sea que pase algo raro
-	if (($histograma == null) or !($ecoinPrecio>0) or !(isset($usdDisp)) or !(isset($ecoinDisp)) or !($fee>0) or ($ecoinModo!='compra' and $ecoinModo!='venta')){
-		$salida.= 'Error! Algun dato esta a 0 o peor. Precio Ecoin: '. $ecoinPrecio.' Dolares disponibles: '.$usdDisp.' Ecoin disponibles: '. $ecoinDisp.' Comision: '.$fee.' Modo: '.$ecoinModo.' Media corta:'.$precioMediaSmall.' Media larga:'.$precioMediaLarge." Histograma: ".$histograma."\r\n";
+	if (($histograma == null) or !($ecoinPrecio>0) or !(isset($marketDisp)) or !(isset($ecoinDisp)) or !($fee>0) or ($ecoinModo!='compra' and $ecoinModo!='venta')){
+		$salida.= 'Error! Algun dato esta a 0 o peor. Precio Ecoin: '. $ecoinPrecio.' Dolares disponibles: '.$marketDisp.' Ecoin disponibles: '. $ecoinDisp.' Comision: '.$fee.' Modo: '.$ecoinModo.' Media corta:'.$precioMediaSmall.' Media larga:'.$precioMediaLarge." Histograma: ".$histograma."\r\n";
 		adios($salida);
 	}
 }
@@ -266,11 +266,11 @@ else {
             $mail=1; //Marcamos para notificar por mail
             $mailEcoinModo=$ecoinModo; //Marcamos variable para enviar por Email-compra
         
-            if ($usdDisp > 0) { //Y si tenemos algunos ecoins para vender.. 
+            if ($marketDisp > 0) { //Y si tenemos algunos ecoins para vender.. 
 
                 $ecoinPrecioOperacion= $ecoinPrecio+$ecoinPrecio*$stopLossBuyPercent/100;
                 $ecoinPrecioOperacion= intval($ecoinPrecioOperacion*100)/100; //truncamos los decimales a dos
-                $ecoinNum=($usdDisp/$ecoinPrecioOperacion)-($usdDisp/$ecoinPrecioOperacion)*($fee/100);
+                $ecoinNum=($marketDisp/$ecoinPrecioOperacion)-($marketDisp/$ecoinPrecioOperacion)*($fee/100);
                 $ecoinNum=intval($ecoinNum*100)/100; // para que sean solo dos decimales
 
                 $salida.='Se van a comprar '.$ecoinNum.' '.$ecoin.' a '.$ecoinPrecioOperacion.' dolares '."\r\n";

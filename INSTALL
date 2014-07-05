@@ -1,0 +1,20 @@
+Requeriments Basic LAMP Installation:
+Distro Linux, php5, mysql
+
+Additional packages:
+php-pear, php5-dev, trader.so (php library)
+
+sudo apt-get install php-pear php5-dev
+sudo  pecl install trader
+
+Add the line extension=trader.so in the files:
+/etc/php5/apache2/php.ini
+/etc/php5/cli/php.ini
+
+create the database Mysql:
+
+mysql -u root -h 127.0.0.1 -ppassword -e "grant all privileges on pauspeculator.* to pauspeculator@localhost identified by ''"
+mysql -u root -h 127.0.0.1 -ppassword -e "grant all privileges on pauspeculator.* to pauspeculator@'%' identified by ''"
+
+Restore de dump en Mysql:
+mysql -u root -h 127.0.0.1  pauspeculator -ppassword < pauspeculator.sql
